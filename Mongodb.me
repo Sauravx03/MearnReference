@@ -1,0 +1,190 @@
+https://docs.mongodb.com/manual/reference/operator/query/
+https://www.mongodbtutorial.org/mongodb-crud/
+
+**************************************************************
+Create - C
+
+insertOne() – show you how insert a single document into a collection.
+db.books.insertOne({ 
+    title: 'MongoDB insertOne',
+    isbn: '0-7617-6154-3'
+});
+
+
+insertMany() – learn how to insert multiple documents into a collection.
+db.books.insertMany([
+   { title:  "NoSQL Distilled", isbn: "0-4696-7030-4"},
+   { title:  "NoSQL in 7 Days", isbn: "0-4086-6859-8"},
+   { title:  "NoSQL Database", isbn: "0-2504-6932-4"},
+]);
+
+**************************************************************
+Find/Read - R
+
+db.products.findOne() // with condition
+db.products.findOne({price:2})  // with condition
+
+db.products.find() // with condition
+db.products.find({price:2})  // with condition
+
+Projection -> only show name and price -> 1 value mean show or on
+db.products.find({}, {
+    name: 1,
+    price: 1
+});
+
+**************************************************************
+Update - U
+$set - > you can replace field value or add the new field column, 
+but make sure you need to update scheme also.
+
+update one
+db.products.updateOne(
+    {  id: 899}, 
+    { $set: {  price: 895 }}
+)
+
+
+update many
+db.products.updateMany(
+    {  price: 899}, 
+    { $set: {  price: 895 }}
+)
+
+$rename – rename a field in a document
+rename field
+db.products.updateMany({}, {
+    $rename: {
+        nmea: "name"   //Oldname : NewName
+    }
+})
+
+$unset – remove one or more fields from a document.
+db.products.updateOne/updateMany({
+    _id: 1 //Don't use Many
+}, {
+    $unset: {
+        price: ""
+    }
+})
+
+**************************************************************
+Delete - D
+delete one
+db.products.deleteOne({ _id: 1 })
+
+delete many with condition
+db.products.deleteMany({ price: 899 })
+
+delete many without condition
+db.products.deleteMany({})
+
+
+****************************************************************
+Selecting documents using comparison query operators
+
+$eq – select documents where the value of a field is equal to a specified value.
+$gt – select documents where the value of a field is greater than a specified value.
+$gte – select documents where the value of a field is greater than or equal to a specified value.
+$lt – select documents where the value of a field is less than a specified value.
+$lte – select documents where the value of a field is less than or equal to a specified value.
+$ne – select documents where the value of a field is not equal to a specified value.
+
+db.products.find({
+    price: { $eq: 899 } //you replace with remaining 5 ( $gt, $gte $lt $lte, $ne )
+});
+
+$in – select documents where the value of a field equals any value in an array
+$nin – select documents where the value of a field doesn’t equal any value in an array
+
+db.products.find({
+    price: {
+        $in: [699, 799] //you replace with $nin
+    }
+});
+
+****************************************************************
+Sorting & Limiting
+sort() – show you how to sort returned documents by one or more fields in ascending and descending orders.
+
+.sort({
+    price: 1,
+    order : 1,
+})
+
+limit() – learn how to specify the number of documents returned by a query.
+.limit(1);
+
+****************************************************************
+Selecting documents using logical query operators
+
+$and – show you how to perform a logical AND operator to select documents.
+$or – guide you on how to perform a logical OR operator to find documents.
+
+db.products.find({
+    $and: [{    //you replace with $or
+        price: 899
+    }, {
+        color: {
+            $in: ["white", "black"]
+        }
+    }]
+})
+
+$not – learn how to perform a logical NOT operator to query documents.
+db.products.find({
+     price: {
+        $not: {
+            $gt: 699
+        }
+    }
+});
+
+$nor – show you how to use the logical NOR operator to select documents.
+db.products.find({
+    $nor :[
+        { price: 899},
+        { color: "gold"}
+    ]
+});
+
+****************************************************************
+
+Selecting documents using element query operators
+$exists – select documents where a field exists. () $exists: true,) Boolean
+db.products.find(
+   {
+ price: {
+ $exists: true
+ } 
+})
+
+$type – select documents where the value of a field is an instance of a BSON type.
+
+db.products.find({
+    price: {
+        $type: "string"/2
+    }
+})
+
+-----------------------------------------------
+Type	           | Number	|     Alias       |
+-----------------------------------------------
+Double	           |  1	    |    “double”
+String	           |  2	    |    “string”
+Object	           |  3	    |    “object”
+Array	           |  4	    |    “array”
+Binary data	       |  5	    |    “binData”
+ObjectId	       |  7	    |    “objectId”
+Boolean	           |  8	    |    “bool”
+Date	           |  9	    |    “date”
+Null	           |  10	|    “null”
+Regular Expression |  11	|    “regex”
+JavaScript	       |  13	|    “javascript”
+32-bit integer	   |  16	|    “int”
+Timestamp	       |  17	|    “timestamp”
+64-bit integer	   |  18	|    “long”
+Decimal128	       |  19	|    “decimal”
+Min key	           |  -1	|    “minKey”
+Max key	           |  127	|    “maxKey”
+------------------------------------------
